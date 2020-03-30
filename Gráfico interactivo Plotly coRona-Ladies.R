@@ -49,3 +49,5 @@ g5 <- ggplot(covid_hospitalizados, aes(x = fecha, y = total, color = CCAA, label
   geom_line(aes(group = CCAA)) +
   theme(axis.text.x = element_text(angle = 45))
 ggplotly(g5)
+
+#
