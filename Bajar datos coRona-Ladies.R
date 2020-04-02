@@ -5,11 +5,6 @@
 ################################
 
 
-# Activar librerías
-library(tidyverse)
-library(plotly)
-
-
 
 ######################            LECTURA DATOS por CCAA            #####################
 
@@ -33,3 +28,18 @@ covid_uci$fecha <- as.Date(covid_uci$fecha, "%Y-%m-%d")
 covid_altas$fecha <- as.Date(covid_altas$fecha, "%Y-%m-%d")
 covid_hospitalizados$fecha <- as.Date(covid_hospitalizados$fecha, "%Y-%m-%d")
 
+# Factorizar CCAA para Dashboard
+covid_casos$CCAA <- as.factor(covid_casos$CCAA)
+
+# Cambiar level "Total" por "España"
+levels(covid_casos$CCAA)[levels(covid_casos$CCAA)=="Total"] <- "España"
+# Reordenamos levels
+CCAA_levels <- levels(covid_casos$CCAA)
+CCAA_levels <- ordered(CCAA_levels, levels = c("España", "Andalucía", "Aragón",
+                                               "Asturias", "Baleares", "C. Valenciana",
+                                               "Canarias", "Cantabria", "Castilla y León",
+                                               "Castilla-La Mancha", "Cataluña", "Ceuta",
+                                               "Extremadura", "Galicia", "La Rioja", "Madrid",
+                                               "Melilla", "Murcia", "Navarra", "País Vasco"))   
+# Ponemos "España" en primer lugar para el Dashboard
+covid_casos <- rbind(covid_casos[covid_casos$CCAA=="España",],covid_casos[covid_casos$CCAA!="España",])
