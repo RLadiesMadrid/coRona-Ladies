@@ -4,7 +4,8 @@
 #                              #
 ################################
 
-
+# Librerias
+library(tidyverse)
 
 ######################            LECTURA DATOS por CCAA            #####################
 
