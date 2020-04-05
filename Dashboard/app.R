@@ -2,21 +2,47 @@ library(shiny)
 library(tidyverse)
 library(shinydashboard)
 
-ui <- dashboardPage(
 
+fecha_ultima <- covid_casos %>% filter(fecha == max(fecha) & CCAA == "España") %>% select(fecha)
+
+ui <- dashboardPage(skin="purple",
+
+   
    dashboardHeader(title = "coRona-Ladies"),
 
    dashboardSidebar(
-   checkboxGroupInput(inputId = "CCAA",  "Comunidades Autónomas:", levels(CCAA_levels), c("Cataluña", "Madrid"))
+   checkboxGroupInput(inputId = "CCAA",  "Comunidades Autónomas:", levels(CCAA_levels), "España"),
+   img(src = "R-Ladies.png",
+       height = "50%", width = "50%"),
+   img(src = "UE_horz_fondo negro.png",
+       height = "100%", width = "100%")
    ),
+
    
    
    dashboardBody(
-      checkboxGroupInput(inputId = "Tipo", "Tipo de Datos:", c("Casos confirmados", "Fallecidos", "Ingresos en UCI", "Altas hospitalarias", "Hospitalizados"),
-                         c("Casos confirmados", "Fallecidos", "Ingresos en UCI", "Altas hospitalarias", "Hospitalizados"), inline = TRUE),
-      plotOutput(outputId = "plot")
+
+      fluidRow(
+         checkboxGroupInput(inputId = "Tipo", "Tipo de Datos:", c("Casos confirmados", "Fallecidos", "Ingresos en UCI", "Altas hospitalarias", "Hospitalizados"),
+                         c("Casos confirmados"), inline = TRUE)
+         ),
+      
+      fluidRow(
+         plotOutput(outputId = "plot"),
+         ),
+
+      h3("Datos para España a fecha de", align = "center", fecha_ultima),
+      
+      fluidRow(
+         valueBoxOutput("casos_esp"),
+         valueBoxOutput("fallecidos_esp"),
+         valueBoxOutput("uci_esp"),
+         valueBoxOutput("altas_esp"),
+         valueBoxOutput("hospitalizados_esp")
       )
-   )
+      )
+)
+
 
 server <- function(input, output) {
 
@@ -423,8 +449,55 @@ server <- function(input, output) {
             
          }
       })
+
+   
+   output$casos_esp <- renderValueBox({
+      casos_esp_hoy <- covid_casos %>% filter(fecha == max(fecha) & CCAA == "España") %>% select(total)
+      valueBox("Casos totales",
+               value = casos_esp_hoy,
+               icon = icon("male"),
+               color = "purple")
+   })
+   
+   output$fallecidos_esp <- renderValueBox({
+      fallecidos_esp_hoy <- covid_fallecidos %>% filter(fecha == max(fecha) & CCAA == "España") %>% select(total)
+      valueBox("Fallecidos",
+               value = fallecidos_esp_hoy,
+               icon = icon("frown"),
+               color = "red")
+   })
+   
+   output$uci_esp <- renderValueBox({
+      uci_esp_hoy <- covid_uci %>% filter(fecha == max(fecha) & CCAA == "España") %>% select(total)
+      valueBox("Ingresados en UCI",
+               value = uci_esp_hoy,
+               icon = icon("users-cog"),
+               color = "purple")
+   })
+      
+   output$altas_esp <- renderValueBox({
+      altas_esp_hoy <- covid_altas %>% filter(fecha == max(fecha) & CCAA == "España") %>% select(total)
+      valueBox("Altas hospitalarias",
+               value = altas_esp_hoy,
+               icon = icon("smile"),
+               color = "purple")
+   })
+
+   output$hospitalizados_esp <- renderValueBox({
+      hospitalizados_esp_hoy <- covid_hospitalizados %>% filter(fecha == max(fecha) & CCAA == "España") %>% select(total)
+      valueBox("Hospitalizados",
+               value = hospitalizados_esp_hoy,
+               icon = icon("bed"),
+               color = "purple")
+   })
 }
+   
 
 shinyApp(ui = ui, server = server)
+
+
+
+
+#################################
 
 
