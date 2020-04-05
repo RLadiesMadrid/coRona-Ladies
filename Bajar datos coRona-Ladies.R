@@ -64,3 +64,18 @@ covid_uci <- rbind(covid_uci[covid_uci$CCAA=="España",],covid_uci[covid_uci$CCA
 covid_altas <- rbind(covid_altas[covid_altas$CCAA=="España",],covid_altas[covid_altas$CCAA!="España",])
 covid_hospitalizados <- rbind(covid_hospitalizados[covid_hospitalizados$CCAA=="España",],covid_hospitalizados[covid_hospitalizados$CCAA!="España",])
 
+
+
+###   Fusión de bases (para simplificar código de Dashboard)  ###
+
+# Añadir variable de tipo de datos
+covid_casos$tipo <- rep("casos", nrow(covid_casos))
+covid_fallecidos$tipo <- rep("fallecidos", nrow(covid_fallecidos))
+covid_uci$tipo <- rep("uci", nrow(covid_uci))
+covid_altas$tipo <- rep("altas", nrow(covid_altas))
+covid_hospitalizados$tipo <- rep("hospitalizados", nrow(covid_hospitalizados))
+
+# fusión
+covid_total <- rbind(covid_casos, covid_fallecidos, covid_uci, covid_altas, covid_hospitalizados)
+
+
