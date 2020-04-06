@@ -8,8 +8,12 @@ source("Bajar datos coRona-Ladies.R")
 ##########################################################################
 
 
+
 # Calculo último día en base de datos para cajas de información en Dashboard
 fecha_ultima <- covid_casos %>% filter(fecha == max(fecha) & CCAA == "España") %>% select(fecha)
+
+
+
 
 ui <- dashboardPage(skin="purple",
 
@@ -134,7 +138,7 @@ server <- function(input, output) {
             scale_shape_manual(name = "Tipo de datos", values = c(1, 2, 4, 5),
                                labels = c("Casos", "Fallecidos", "Altas hospitalarias", "Hospitalizados"))
          
-      } else if (casos & fallecidos & uci & altas){
+      } else if (casos & uci & altas & hospitalizados){
          ggplot(NULL, aes(x = fecha, y = total)) +
             geom_point(  covid_casos_g,          mapping = aes(shape = "1")) +
             geom_line(   covid_casos_g,          mapping = aes(color = CCAA, group = CCAA)) +
@@ -150,7 +154,7 @@ server <- function(input, output) {
             scale_shape_manual(name = "Tipo de datos", values = c(1, 3, 4, 5),
                                labels = c("Casos", "Ingresados en UCI", "Altas hospitalarias", "Hospitalizados"))
          
-      } else if (casos & fallecidos & uci & altas){
+      } else if (fallecidos & uci & altas & hospitalizados){
          ggplot(NULL, aes(x = fecha, y = total)) +
             geom_point(  covid_fallecidos_g,     mapping = aes(shape = "2")) +
             geom_line(   covid_fallecidos_g,     mapping = aes(color = CCAA, group = CCAA)) +
@@ -166,6 +170,21 @@ server <- function(input, output) {
             scale_shape_manual(name = "Tipo de datos", values = c(2, 3, 4, 5),
                                labels = c("Fallecidos", "Ingresados en UCI", "Altas hospitalarias", "Hospitalizados"))
          
+      } else if (fallecidos & uci & altas & hospitalizados){
+         ggplot(NULL, aes(x = fecha, y = total)) +
+            geom_point(  covid_fallecidos_g,     mapping = aes(shape = "2")) +
+            geom_line(   covid_fallecidos_g,     mapping = aes(color = CCAA, group = CCAA)) +
+            geom_point(  covid_uci_g,            mapping = aes(shape = "3")) +
+            geom_line(   covid_uci_g,            mapping = aes(color = CCAA, group = CCAA)) +
+            geom_point(  covid_altas_g,          mapping = aes(shape = "4")) +
+            geom_line(   covid_altas_g,          mapping = aes(color = CCAA, group = CCAA)) +
+            geom_point(  covid_hospitalizados_g, mapping = aes(shape = "5")) +
+            geom_line(   covid_hospitalizados_g, mapping = aes(color = CCAA, group = CCAA)) +
+            ggtitle("COVID-19 en España por Comunidades Autónomas (2020)") +
+            xlab("Fecha") +
+            ylab("Número total") +
+            scale_shape_manual(name = "Tipo de datos", values = c(2, 3, 4, 5),
+                               labels = c("Fallecidos", "Ingresados en UCI", "Altas hospitalarias", "Hospitalizados"))
          
       } else if (casos & fallecidos & uci){
          ggplot(NULL, aes(x = fecha, y = total)) +
@@ -209,7 +228,7 @@ server <- function(input, output) {
             scale_shape_manual(name = "Tipo de datos", values = c(1, 2, 5),
                                labels = c("Casos", "Fallecidos", "Hospitalizados"))
          
-      } else if (casos & fallecidos & uci){
+      } else if (casos & uci & altas){
          ggplot(NULL, aes(x = fecha, y = total)) +
             geom_point(  covid_casos_g,          mapping = aes(shape = "1")) +
             geom_line(   covid_casos_g,          mapping = aes(color = CCAA, group = CCAA)) +
@@ -223,7 +242,7 @@ server <- function(input, output) {
             scale_shape_manual(name = "Tipo de datos", values = c(1, 3, 4),
                                labels = c("Casos", "Ingresados en UCI", "Altas Hospitalarias"))
          
-      } else if (casos & fallecidos & uci){
+      } else if (casos & uci & hospitalizados){
          ggplot(NULL, aes(x = fecha, y = total)) +
             geom_point(  covid_casos_g,          mapping = aes(shape = "1")) +
             geom_line(   covid_casos_g,          mapping = aes(color = CCAA, group = CCAA)) +
@@ -251,7 +270,7 @@ server <- function(input, output) {
             scale_shape_manual(name = "Tipo de datos", values = c(1, 4, 5),
                                labels = c("Casos", "Altas Hospitalarias", "Hospitalizados"))
          
-      } else if (casos & fallecidos & uci){
+      } else if (fallecidos & uci & altas){
          ggplot(NULL, aes(x = fecha, y = total)) +
             geom_point(  covid_fallecidos_g,     mapping = aes(shape = "2")) +
             geom_line(   covid_fallecidos_g,     mapping = aes(color = CCAA, group = CCAA)) +
@@ -265,9 +284,9 @@ server <- function(input, output) {
             scale_shape_manual(name = "Tipo de datos", values = c(2, 3, 4),
                                labels = c("Fallecidos", "Ingresados en UCI", "Altas Hospitalarias"))
          
-      } else if (casos & fallecidos & uci){
+      } else if (fallecidos & uci & hospitalizados){
          ggplot(NULL, aes(x = fecha, y = total)) +
-           geom_point(  covid_fallecidos_g,     mapping = aes(shape = "2")) +
+           geom_point(  covid_fallecidos_g,      mapping = aes(shape = "2")) +
             geom_line(   covid_fallecidos_g,     mapping = aes(color = CCAA, group = CCAA)) +
             geom_point(  covid_uci_g,            mapping = aes(shape = "3")) +
             geom_line(   covid_uci_g,            mapping = aes(color = CCAA, group = CCAA)) +
@@ -277,6 +296,20 @@ server <- function(input, output) {
             xlab("Fecha") +
             ylab("Número total") +
             scale_shape_manual(name = "Tipo de datos", values = c(2, 3, 5),
+                               labels = c("Fallecidos", "Ingresados en UCI", "Hospitalizados"))
+        
+      } else if (fallecidos & altas & hospitalizados){
+         ggplot(NULL, aes(x = fecha, y = total)) +
+            geom_point(  covid_fallecidos_g,      mapping = aes(shape = "2")) +
+            geom_line(   covid_fallecidos_g,     mapping = aes(color = CCAA, group = CCAA)) +
+            geom_point(  covid_altas_g,          mapping = aes(shape = "4")) +
+            geom_line(   covid_altas_g,          mapping = aes(color = CCAA, group = CCAA)) +
+            geom_point(  covid_hospitalizados_g, mapping = aes(shape = "5")) +
+            geom_line(   covid_hospitalizados_g, mapping = aes(color = CCAA, group = CCAA)) +
+            ggtitle("COVID-19 en España por Comunidades Autónomas (2020)") +
+            xlab("Fecha") +
+            ylab("Número total") +
+            scale_shape_manual(name = "Tipo de datos", values = c(2, 4, 5),
                                labels = c("Fallecidos", "Ingresados en UCI", "Hospitalizados"))
          
       } else if (casos & fallecidos & uci){
